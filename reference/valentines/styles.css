@@ -135,4 +135,156 @@ button:hover {
 #love span:nth-child(1) { animation-delay: 0s; }
 #love span:nth-child(2) { animation-delay: 0.2s; }
 #love span:nth-child(3) { animation-delay: 0.4s; }
-#love span:nth-child(4) { animation-delay: 0.6s; } 
+#love span:nth-child(4) { animation-delay: 0.6s; }
+
+/* Styles for thank you page and envelope animation */
+.thankyou-container {
+    text-align: center;
+    padding: 20px;
+}
+
+#openEnvelopeBtn {
+    margin: 20px auto;
+    display: block;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #7a0811;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#envelopeContainer {
+    position: relative;
+    margin-top: 20px;
+}
+
+#envelope {
+    width: 200px;
+    height: 150px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 2px solid #7a0811;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Disable the old envelope pseudo-element */
+#envelope::before {
+    display: none;
+}
+
+/* Updated style for the flap representing the closed envelope flap to look like a V */
+#envelope .flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background-color: #7a0811;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transition: transform 0.5s ease-in-out;
+    transform-origin: top center;
+}
+
+/* Style for the 'Click Me' text inside the envelope */
+#envelope .click-text {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    color: #7a0811;
+}
+
+/* When the envelope is clicked, animate the flap to open */
+#envelope.open-envelope .flap {
+    animation: openFlapAnim 0.5s forwards ease-in-out;
+}
+
+@keyframes openFlapAnim {
+    0% {
+        transform: rotateX(0deg);
+    }
+    100% {
+        transform: rotateX(-180deg);
+    }
+}
+
+#paper {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background-color: #000;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    width: 0;
+    height: 0;
+}
+
+@keyframes paperRiseAndExpand {
+    0% {
+        width: 200px;
+        height: 150px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    30% {
+        width: 200px;
+        height: 150px;
+        top: calc(50% - 100px);
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        transform: none;
+    }
+}
+
+.animate-paper {
+    animation: paperRiseAndExpand 1s forwards ease-in-out;
+}
+
+/* Envelope text styling */
+.envelope-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #7a0811;
+    pointer-events: none;
+}
+
+/* Close button styling for the black paper overlay */
+#closePaper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: #fff;
+    cursor: pointer;
+}
+
+@keyframes openEnvelopeAnim {
+    0% {
+        height: 50%;
+    }
+    100% {
+        height: 0;
+    }
+}
+
+#envelope.open-envelope::before {
+    animation: openEnvelopeAnim 0.5s forwards ease-in-out;
+} 

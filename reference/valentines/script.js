@@ -132,8 +132,56 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // When 'yes' is clicked, update the card content with a thank you message
+    // When 'yes' is clicked, update the card content with a thank you message and envelope
     yesButton.addEventListener('click', function() {
-        card.innerHTML = '<h1>Thank You!</h1><p>I always knew you would choose love!</p>';
+        renderThankYouPage();
     });
+
+    function renderThankYouPage() {
+        card.innerHTML = `
+            <div class="thankyou-container">
+                <h1>Thank You!</h1>
+                <p>I always knew you would choose love!</p>
+                <div id="envelopeContainer">
+                    <div id="envelope">
+                        <div class="flap"></div>
+                        <div class="click-text">Click Me</div>
+                    </div>
+                    <div id="paper"></div>
+                </div>
+            </div>`;
+        attachEnvelopeListener();
+    }
+
+    function attachEnvelopeListener() {
+        const envelope = document.getElementById('envelope');
+        envelope.addEventListener('click', function() {
+            // Add a class to trigger envelope opening animation
+            envelope.classList.add('open-envelope');
+            // After 500ms, start the paper animation but keep the envelope visible
+            setTimeout(function() {
+                const paper = document.getElementById('paper');
+                paper.style.display = 'block';
+                paper.classList.add('animate-paper');
+                // After the paper animation completes (1s), hide the envelope and start the magic wand drawing animation
+                setTimeout(function(){
+                    envelope.style.display = 'none';
+                    // Append close button to the paper overlay without removing the canvas
+                    const closeBtn = document.createElement('button');
+                    closeBtn.id = 'closePaper';
+                    closeBtn.innerHTML = '&times;';
+                    paper.appendChild(closeBtn);
+                    closeBtn.addEventListener('click', function() {
+                        paper.classList.remove('animate-paper');
+                        paper.style.display = 'none';
+                        renderThankYouPage();
+                    });
+                    // Dynamically load the p5.js sketch for 3D flower animation
+                    let scriptElem = document.createElement('script');
+                    scriptElem.src = 'sketch.js';
+                    document.body.appendChild(scriptElem);
+                }, 1000); // Delay matches the paper animation duration
+            }, 500); // Delay for envelope opening animation before paper animation starts
+        });
+    }
 }); 
