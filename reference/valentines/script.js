@@ -37,25 +37,27 @@ function teleportButton(button) {
     const buttonRect = button.getBoundingClientRect();
     const padding = 20;
 
-    // Calculate safe boundaries for the button
     const minX = padding;
     const maxX = screenWidth - button.offsetWidth - padding;
     const minY = padding;
     const maxY = screenHeight - button.offsetHeight - padding;
 
     let randomX, randomY;
+    let attempts = 0;
     do {
         randomX = Math.floor(Math.random() * (maxX - minX)) + minX;
         randomY = Math.floor(Math.random() * (maxY - minY)) + minY;
+        attempts++;
+        if (attempts > 10) {
+            break;
+        }
     } while (
-        // Avoid the card area
         randomX < cardRect.right &&
         randomX + buttonRect.width > cardRect.left &&
         randomY < cardRect.bottom &&
         randomY + buttonRect.height > cardRect.top
     );
 
-    // Create a wrapper for the button content if it doesn't exist
     let contentWrapper = button.querySelector('.button-content');
     if (!contentWrapper) {
         contentWrapper = document.createElement('div');
@@ -132,6 +134,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Mobile-specific click handler: On touch devices, tap the 'no' button to teleport it
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        noButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            teleportButton(noButton);
+            yesScale += 0.1;
+            noScale -= 0.05;
+            yesButton.style.transform = `scale(${yesScale})`;
+            const contentWrapper = noButton.querySelector('.button-content');
+            contentWrapper.textContent = messages[currentMessageIndex];
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+        });
+    }
+
     // When 'yes' is clicked, update the card content with a thank you message and envelope
     yesButton.addEventListener('click', function() {
         renderThankYouPage();
@@ -172,9 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     closeBtn.innerHTML = '&times;';
                     paper.appendChild(closeBtn);
                     closeBtn.addEventListener('click', function() {
-                        paper.classList.remove('animate-paper');
-                        paper.style.display = 'none';
-                        renderThankYouPage();
+                        window.location.reload();
                     });
                     // Dynamically load the p5.js sketch for 3D flower animation
                     let scriptElem = document.createElement('script');

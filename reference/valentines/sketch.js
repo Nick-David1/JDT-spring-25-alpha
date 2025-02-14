@@ -10,7 +10,11 @@ const flowerSketch = function(p) {
   };
 
   p.setup = function() {
-    p.createCanvas(700, 700, p.WEBGL);
+    if (p.windowWidth < 600) {
+      p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL);
+    } else {
+      p.createCanvas(700, 700, p.WEBGL);
+    }
     p.colorMode(p.HSB);
     p.angleMode(p.DEGREES);
     p.strokeWeight(4);
@@ -96,6 +100,12 @@ const flowerSketch = function(p) {
   p.draw = function() {
     p.background(0);
     p.orbitControl(4, 4);
+    p.push();
+    if (p.width < 600) {
+      // On mobile: zoom out more and shift upward to center the flower
+      p.scale(0.4);
+      p.translate(0, -100);
+    }
     p.rotateX(-30);
     
     // Progressive Stem Drawing
@@ -146,23 +156,23 @@ const flowerSketch = function(p) {
     
     // Update progress: stem first, then leaf, then flower
     if (stemProgress < 1) {
-      stemProgress += 0.005;
+      stemProgress += 0.01;
       if (stemProgress > 1) stemProgress = 1;
     } else if (leafProgress < 1) {
-      leafProgress += 0.01;
+      leafProgress += 0.05;
       if (leafProgress > 1) leafProgress = 1;
     } else {
       if (flowerProgress < maxSteps) {
-        flowerProgress += 0.1;
+        flowerProgress += 0.3;
         if (flowerProgress > maxSteps) flowerProgress = maxSteps;
       }
     }
     
     // Draw 'Happy Valentines Day' text in the same 3D space above the flower
-    if (stemProgress >= 1 && leafProgress >= 1 && flowerProgress >= Math.floor(Math.floor(1.02/0.02)+1)) {
+    if (stemProgress >= 1 && leafProgress >= 1 && flowerProgress >= maxSteps) {
       let message = "Happy Valentines Day, Love Nick";
       if (textProgress < message.length) {
-        textProgress += 0.25; // Increase to control speed
+        textProgress += 0.25;
       }
       let displayText = message.substring(0, Math.floor(textProgress));
       p.push();
@@ -170,10 +180,15 @@ const flowerSketch = function(p) {
       p.textAlign(p.CENTER, p.CENTER);
       p.textSize(50);
       p.fill('#FF9999');
-      p.translate(0, -300, 0);
+      if (p.width < 600) {
+        p.translate(0, -400, 0);
+      } else {
+        p.translate(0, -300, 0);
+      }
       p.text(displayText, 0, 0);
       p.pop();
     }
+    p.pop();
   };
 };
 
