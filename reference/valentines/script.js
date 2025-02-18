@@ -25,7 +25,7 @@ const messages = [
 ];
 let currentMessageIndex = 0;
 
-// Let's set initial scale values
+
 let yesScale = 1;
 let noScale = 1;
 
@@ -78,14 +78,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const noButton = document.getElementById('no');
     const card = document.querySelector('.card');
 
-    // Set initial no button text with wrapper
     const contentWrapper = document.createElement('div');
     contentWrapper.className = 'button-content';
     contentWrapper.textContent = 'no';
     noButton.textContent = '';
     noButton.appendChild(contentWrapper);
 
-    // Track mouse movement
+
     document.addEventListener('mousemove', function(e) {
         if (noButton.style.position !== 'fixed') {
             const buttonRect = noButton.getBoundingClientRect();
@@ -101,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 Math.pow(mouseY - buttonCenterY, 2)
             );
 
-            // If mouse gets too close, start teleporting
+            
             if (distance < safeDistance) {
                 teleportButton(noButton);
             }
@@ -121,12 +120,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (distance < safeDistance) {
                 teleportButton(noButton);
                 
-                // Update scales and button text
+                
                 yesScale += 0.1;
                 noScale -= 0.05;
                 yesButton.style.transform = `scale(${yesScale})`;
-                
-                // Update the text of the no button
+               
                 const contentWrapper = noButton.querySelector('.button-content');
                 contentWrapper.textContent = messages[currentMessageIndex];
                 currentMessageIndex = (currentMessageIndex + 1) % messages.length;
@@ -134,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Mobile-specific click handler: On touch devices, tap the 'no' button to teleport it
+
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
         noButton.addEventListener('click', function(e) {
             e.preventDefault();
@@ -148,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // When 'yes' is clicked, update the card content with a thank you message and envelope
     yesButton.addEventListener('click', function() {
         renderThankYouPage();
     });
@@ -172,30 +169,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function attachEnvelopeListener() {
         const envelope = document.getElementById('envelope');
         envelope.addEventListener('click', function() {
-            // Add a class to trigger envelope opening animation
             envelope.classList.add('open-envelope');
-            // After 500ms, start the paper animation but keep the envelope visible
             setTimeout(function() {
                 const paper = document.getElementById('paper');
                 paper.style.display = 'block';
                 paper.classList.add('animate-paper');
-                // After the paper animation completes (1s), hide the envelope and start the magic wand drawing animation
-                setTimeout(function(){
                     envelope.style.display = 'none';
-                    // Append close button to the paper overlay without removing the canvas
                     const closeBtn = document.createElement('button');
                     closeBtn.id = 'closePaper';
                     closeBtn.innerHTML = '&times;';
                     paper.appendChild(closeBtn);
                     closeBtn.addEventListener('click', function() {
-                        window.location.reload();
+                        paper.classList.remove('animate-paper');
+                        paper.style.display = 'none';
+                        renderThankYouPage();
                     });
-                    // Dynamically load the p5.js sketch for 3D flower animation
                     let scriptElem = document.createElement('script');
                     scriptElem.src = 'sketch.js';
                     document.body.appendChild(scriptElem);
-                }, 1000); // Delay matches the paper animation duration
-            }, 500); // Delay for envelope opening animation before paper animation starts
-        });
+                }, 1000); 
+            }, 500); 
     }
 }); 

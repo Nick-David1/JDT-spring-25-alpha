@@ -1,4 +1,4 @@
-// Update global progress variables
+
 let stemProgress = 0;
 let flowerProgress = 0;
 let leafProgress = 0;
@@ -22,18 +22,18 @@ const flowerSketch = function(p) {
     setTimeout(function(){ p.isTextPhase = false; }, 3000);
   };
 
-  // Modified drawLeaf to draw progressively based on provided progress (0 to 1)
+ 
   function drawLeaf(p, position, size, angle, progress) {
     p.push();
     p.translate(position.x, position.y, position.z);
     p.rotateY(angle);
     
-    // Leaf color gradient
+    
     let leafHue = p.random(100, 130); // Natural green variation
     p.fill(leafHue, 80, 60);
     p.noStroke();
     
-    // Draw part of the leaf shape based on progress
+   
     for(let r = 0; r <= progress; r += 0.1) {
       p.beginShape();
       for(let theta = -90; theta <= 90; theta += 5) {
@@ -49,21 +49,21 @@ const flowerSketch = function(p) {
     p.pop();
   }
 
-  // New function to draw the stem progressively from bottom up
+
   function drawStem(p) {
     p.push();
     p.noStroke();
     p.fill(120, 80, 60);
     p.translate(0, 50, 0);
     
-    let stemBottomY = 250; // bottom of stem
-    let stemTopY = -150;    // extended top so stem reaches base of flower
+    let stemBottomY = 250; 
+    let stemTopY = -150;    
     let stemHeight = stemBottomY - stemTopY;
     let currentY = stemBottomY - stemProgress * stemHeight;
     
-    let segments = 200;  // number of vertical segments
-    let r = 8;          // increased stem radius for fuller appearance
-    let angleSteps = 30; // more subdivisions for a complete circle
+    let segments = 200;  
+    let r = 8;          
+    let angleSteps = 30; 
     
     for (let i = 0; i < segments; i++) {
       let t1 = i / segments;
@@ -71,11 +71,11 @@ const flowerSketch = function(p) {
       let y1 = stemBottomY - t1 * stemHeight;
       let y2 = stemBottomY - t2 * stemHeight;
       
-      // Clamp y2 to currentY
+      
       if (y2 < currentY) {
         y2 = currentY;
       }
-      // If this band is completely above currentY, stop drawing
+      
       if (y1 < currentY) {
         break;
       }
@@ -102,19 +102,19 @@ const flowerSketch = function(p) {
     p.orbitControl(4, 4);
     p.push();
     if (p.width < 600) {
-      // On mobile: zoom out more and shift upward to center the flower
+      
       p.scale(0.4);
       p.translate(0, -100);
     }
     p.rotateX(-30);
     
-    // Progressive Stem Drawing
+    
     drawStem(p);
     
-    // Progressive Leaf Drawing: keep only the bottom most leaf
+    
     drawLeaf(p, p.createVector(0, 100, 0), 30, 45, leafProgress);
     
-    // Progressive Flower Drawing with smooth interpolation
+    
     let maxSteps = Math.floor(1.02 / 0.02) + 1;
     if (leafProgress >= 1) {
       let fullSteps = Math.floor(flowerProgress);
@@ -154,7 +154,7 @@ const flowerSketch = function(p) {
       }
     }
     
-    // Update progress: stem first, then leaf, then flower
+    
     if (stemProgress < 1) {
       stemProgress += 0.01;
       if (stemProgress > 1) stemProgress = 1;
@@ -168,9 +168,9 @@ const flowerSketch = function(p) {
       }
     }
     
-    // Draw 'Happy Valentines Day' text in the same 3D space above the flower
+    
     if (stemProgress >= 1 && leafProgress >= 1 && flowerProgress >= maxSteps) {
-      let message = "Happy Valentines Day, Love Nick";
+      let message = "Happy Valentines Day";
       if (textProgress < message.length) {
         textProgress += 0.25;
       }
